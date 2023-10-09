@@ -1,13 +1,14 @@
-import { galleryItems } from "./gallery-items.js";
-const imgContainer = document.querySelector(".gallery");
-const imgMarkup = createMarkup(galleryItems);
-imgContainer.insertAdjacentHTML("beforeend", imgMarkup);
-imgContainer.addEventListener("click", OpenModal);
+import { galleryItems } from './gallery-items';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
-function createMarkup(arr) {
-  return arr
+const imgContainer = document.querySelector('.gallery');
+const galleryCards = createMarkup(galleryItems);
+
+function createMarkup(galleryItems) {
+  return galleryItems
     .map(({ preview, original, description }) => {
-      return `<div class="gallery">
+      return `<div class="gallery__item">
   <a class="gallery__link" href="${original}">
     <img
       class="gallery__image"
@@ -18,33 +19,12 @@ function createMarkup(arr) {
   </a>
   </div>`;
     })
-    .join("");
+    .join('');
 }
+imgContainer.insertAdjacentHTML('beforeend', galleryCards);
 
-const instance = basicLightbox.create(`<img src="" />`, {
-  onShow: () => {
-    document.addEventListener("keydown", escImgCard);
-  },
-  onClose: () => {
-    document.removeEventListener("keydown", escImgCard);
-  },
+new SimpleLightbox('.gallery a', {
+  caption: true,
+  captionsData: 'alt',
+  captionDelay: 250,
 });
-
-function escImgCard(evt) {
-  if (evt.code === "Escape") {
-    instance.close();
-  }
-}
-
-function OpenModal(evt) {
-  evt.preventDefault();
-  instance.element().querySelector("img").src = evt.target.dataset.source;
-  instance.show();
-}
-// Выполняй это задание в файлах 01-gallery.html и 01-gallery.js. Разбей его на несколько подзадач:
-
-// Создание и рендер разметки по массиву данных galleryItems и предоставленному шаблону элемента галереи.
-// Реализация делегирования на div.gallery и получение url большого изображения.
-// Подключение скрипта и стилей библиотеки модального окна basicLightbox. Используй CDN сервис jsdelivr и добавь в проект ссылки на минифицированные (.min) файлы библиотеки.
-// Открытие модального окна по клику на элементе галереи. Для этого ознакомься с документацией и примерами.
-// Замена значения атрибута src элемента <img> в модальном окне перед открытием. Используй готовую разметку модального окна с изображением из примеров библиотеки basicLightbox.
